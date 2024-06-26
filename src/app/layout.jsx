@@ -40,14 +40,14 @@ export default function RootLayout({ children }) {
               <Button
                 className='btn-danger'
                 disabled={!page}
-                onClick={_ => push(page > 1 ? `question/${page - 1}` : '/')}
+                onClick={_ => push(page > 1 ? `/question/${parseInt(page) - 1}` : '/')}
               >
                 <FontAwesomeIcon icon='rotate-left' />
                 Back
               </Button>
               <Button
                 disabled={page && parseInt(page) === questions.length}
-                onClick={_ => push(`question/${pathname === '/' ? 1 : page + 1}`)}
+                onClick={_ => push(`/question/${pathname === '/' ? 1 : parseInt(page) + 1}`)}
               >
                 Next
               </Button>
