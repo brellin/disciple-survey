@@ -8,8 +8,9 @@ import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import './page.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import questions from './question/[page]/questions';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { makeStore } from '../lib/store';
+import { useEffect } from 'react';
 
 library.add(faRotateLeft);
 
@@ -23,38 +24,48 @@ if (globalThis.addEventListener)
         : 'light';
   });
 
-export default function RootLayout({ children }) {
+export default ({ children }) => (
+  <Provider store={store}>
+    <html lang='en'>
+      <body>
+        <RootLayout {...{ children }} />
+      </body>
+    </html>
+  </Provider>
+);
+
+function RootLayout({ children }) {
   const { push } = useRouter();
   const { page } = useParams();
   const pathname = usePathname();
+  const dispatch = useDispatch();
+
+  useEffect(_ => {
+    dispatch({ type: 'initquestions', payload: questions });
+  }, []);
+
   return (
-    <Provider store={store}>
-      <html lang='en'>
-        <body>
-          <Container>
-            <h1>Disciple Survey</h1>
+    <Container>
+      <h1>Disciple Survey</h1>
 
-            <Form>{children}</Form>
+      <Form>{children}</Form>
 
-            <span className='w-100 d-flex justify-content-around fixed-bottom py-2'>
-              <Button
-                className='btn-danger'
-                disabled={!page}
-                onClick={_ => push(page > 1 ? `/question/${parseInt(page) - 1}` : '/')}
-              >
-                <FontAwesomeIcon icon='rotate-left' />
-                Back
-              </Button>
-              <Button
-                disabled={page && parseInt(page) === questions.length}
-                onClick={_ => push(`/question/${pathname === '/' ? 1 : parseInt(page) + 1}`)}
-              >
-                Next
-              </Button>
-            </span>
-          </Container>
-        </body>
-      </html>
-    </Provider>
+      <span className='w-100 d-flex justify-content-around fixed-bottom py-2'>
+        <Button
+          className='btn-danger'
+          disabled={!page}
+          onClick={_ => push(page > 1 ? `/question/${parseInt(page) - 1}` : '/')}
+        >
+          <FontAwesomeIcon icon='rotate-left' />
+          Back
+        </Button>
+        <Button
+          disabled={page && parseInt(page) === questions.length}
+          onClick={_ => push(`/question/${pathname === '/' ? 1 : parseInt(page) + 1}`)}
+        >
+          Next
+        </Button>
+      </span>
+    </Container>
   );
 }

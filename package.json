@@ -23,6 +23,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "bootstrap": "^5.3.3",
+    "cookies-next": "^4.2.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "express": "^4.19.2",
