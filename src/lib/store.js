@@ -5,7 +5,7 @@ import { INIT_QUESTIONS, LOGIN, SELECT_ANSWER, UPDATE_EMAIL } from './actions';
 const initialState = {
   email: getCookie('email') || '',
   user: {},
-  questions: JSON.parse(getCookie('questions')) || []
+  questions: getCookie('questions') ? JSON.parse(getCookie('questions')) : []
 };
 
 function reducer(state = initialState, { type, payload }) {

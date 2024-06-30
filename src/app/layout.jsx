@@ -40,9 +40,12 @@ function RootLayout({ children }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
 
-  useEffect(_ => {
-    dispatch({ type: 'initquestions', payload: questions });
-  }, []);
+  useEffect(
+    _ => {
+      dispatch({ type: 'initquestions', payload: questions });
+    },
+    [dispatch]
+  );
 
   return (
     <Container>

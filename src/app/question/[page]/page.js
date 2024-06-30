@@ -7,7 +7,6 @@ import questions from './questions';
 import { store } from '../../layout';
 import { useDispatch } from 'react-redux';
 import { SELECT_ANSWER } from '../../../lib/actions';
-import { useState } from 'react';
 
 export default function page({ params: { page } }) {
   console.log('store', store.getState());
