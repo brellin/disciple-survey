@@ -24,7 +24,7 @@ if (globalThis.addEventListener)
         : 'light';
   });
 
-export default ({ children }) => (
+export default Root = ({ children }) => (
   <Provider store={store}>
     <html lang='en'>
       <body>
