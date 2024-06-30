@@ -24,15 +24,17 @@ if (globalThis.addEventListener)
         : 'light';
   });
 
-export default Root = ({ children }) => (
-  <Provider store={store}>
-    <html lang='en'>
-      <body>
-        <RootLayout {...{ children }} />
-      </body>
-    </html>
-  </Provider>
-);
+export default function Root({ children }) {
+  return (
+    <Provider store={store}>
+      <html lang='en'>
+        <body>
+          <RootLayout {...{ children }} />
+        </body>
+      </html>
+    </Provider>
+  );
+}
 
 function RootLayout({ children }) {
   const { push } = useRouter();

@@ -8,7 +8,7 @@ import { store } from '../../layout';
 import { useDispatch } from 'react-redux';
 import { SELECT_ANSWER } from '../../../lib/actions';
 
-export default function page({ params: { page } }) {
+export default function RenderPage({ params: { page } }) {
   console.log('store', store.getState());
   return <Page {...{ ...questions[page - 1], page }} />;
 }
