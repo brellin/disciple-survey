@@ -7,6 +7,7 @@ import questions from './questions';
 import { store } from '../../layout';
 import { useDispatch } from 'react-redux';
 import { SELECT_ANSWER } from '../../../lib/actions';
+import { useEffect, useRef } from 'react';
 
 export default function RenderPage({ params: { page } }) {
   console.log('store', store.getState());
@@ -37,6 +38,15 @@ const Page = ({ title, type, selections, page }) => (
 
 function RadioQuestion({ text, page, questionId, id, checked }) {
   const dispatch = useDispatch();
+  const ref = useRef();
+  useEffect(
+    _ => {
+      if (checked) {
+        ref.current.checked = checked;
+      }
+    },
+    [ref]
+  );
 
   return (
     <FormCheck>
@@ -45,6 +55,7 @@ function RadioQuestion({ text, page, questionId, id, checked }) {
         type='radio'
         name={page}
         defaultChecked={checked}
+        ref={ref}
         onInput={({ target }) =>
           target.checked && dispatch({ type: SELECT_ANSWER, payload: { questionId, selected: id } })
         }

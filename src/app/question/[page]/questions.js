@@ -22,11 +22,12 @@ export default [
         text: 'The Bible is a book that you never stop learning and acquiring wisdom from.',
         focus: 'Keeper',
         weight: 4
-      },
+      }
     ]
   },
   {
-    title: 'If you had to be asked last minute to fill in for someone, which are you most comfortable with?',
+    title:
+      'If you had to be asked last minute to fill in for someone, which are you most comfortable with?',
     type: 'radio',
     selections: [
       {
@@ -35,20 +36,20 @@ export default [
         weight: 4
       },
       {
-        text: "I’m willing to lead a bible study that is showing the way of salvation.",
+        text: 'I’m willing to lead a bible study that is showing the way of salvation.',
         focus: 'Maker',
         weight: 4
       },
       {
-        text: "I’m willing to go to the hospital to visit someone who is about to die",
+        text: 'I’m willing to go to the hospital to visit someone who is about to die',
         focus: 'Healer',
         weight: 4
       },
       {
-        text: "I’m willing to leading a bible class at church.",
+        text: 'I’m willing to lead a bible class at church.',
         focus: 'Keeper',
         weight: 4
-      },
+      }
     ]
-  },
-]
+  }
+];
