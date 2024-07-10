@@ -1,20 +1,23 @@
 'use client';
 
+import { useEffect, useState, createContext } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
+import { Provider, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+
+import { makeStore } from '../lib/store';
+import questions from './question/[page]/questions';
 import './page.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import questions from './question/[page]/questions';
-import { Provider, useDispatch } from 'react-redux';
-import { makeStore } from '../lib/store';
-import { useEffect } from 'react';
 
 library.add(faRotateLeft);
 
 export const store = makeStore();
+
+export const ValidationContext = createContext(null);
 
 if (globalThis.addEventListener)
   globalThis.addEventListener('load', _ => {
@@ -37,6 +40,8 @@ export default function Root({ children }) {
 }
 
 function RootLayout({ children }) {
+  const [inputValid, setInputValid] = useState(false);
+
   const { push } = useRouter();
   const { page } = useParams();
   const pathname = usePathname();
@@ -53,7 +58,9 @@ function RootLayout({ children }) {
     <Container>
       <h1>Disciple Survey</h1>
 
+    <ValidationContext.Provider value={setInputValid}>
       <Form>{children}</Form>
+    </ValidationContext.Provider>
 
       <span className='w-100 d-flex justify-content-around fixed-bottom py-2'>
         <Button
@@ -65,7 +72,7 @@ function RootLayout({ children }) {
           Back
         </Button>
         <Button
-          disabled={page && parseInt(page) === questions.length}
+          disabled={!inputValid || page && parseInt(page) === questions.length}
           onClick={_ => push(`/question/${pathname === '/' ? 1 : parseInt(page) + 1}`)}
         >
           Next
