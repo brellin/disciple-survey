@@ -1,15 +1,13 @@
 'use client';
-
-import { useEffect, useState, createContext } from 'react';
-import { Button, Container, Form } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Container } from 'react-bootstrap';
 import { Provider, useDispatch } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useParams, usePathname, useRouter } from 'next/navigation';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { INIT_QUESTIONS } from '../lib/actions';
+import axios from '../utils/axios';
 
 import { makeStore } from '../lib/store';
-import questions from './question/[page]/questions';
 import './page.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -17,67 +15,53 @@ library.add(faRotateLeft);
 
 export const store = makeStore();
 
-export const ValidationContext = createContext(null);
+export default ({ children }) => {
+  const [theme, setTheme] = useState('light');
 
-if (globalThis.addEventListener)
-  globalThis.addEventListener('load', _ => {
-    document.body.dataset.bsTheme =
-      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-  });
+  useEffect(
+    _ => {
+      setTheme(
+        globalThis.matchMedia && globalThis.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+      );
+    },
+    [globalThis]
+  );
 
-export default function Root({ children }) {
   return (
     <Provider store={store}>
-      <html lang='en'>
+      <html lang='en' data-bs-theme={theme}>
         <body>
-          <RootLayout {...{ children }} />
+          <GlobalLayout>{children}</GlobalLayout>
         </body>
       </html>
     </Provider>
   );
-}
+};
 
-function RootLayout({ children }) {
-  const [inputValid, setInputValid] = useState(false);
-
-  const { push } = useRouter();
-  const { page } = useParams();
-  const pathname = usePathname();
+function GlobalLayout({ children }) {
   const dispatch = useDispatch();
 
   useEffect(
     _ => {
-      dispatch({ type: 'initquestions', payload: questions });
+      (async _ => {
+        try {
+          const { data } = await axios.get('questions');
+          dispatch({ type: INIT_QUESTIONS, payload: data });
+        } catch (err) {
+          console.error(err);
+        }
+      })();
     },
     [dispatch]
   );
 
   return (
     <Container>
-      <h1>Disciple Survey</h1>
+      <h1>Disciple App</h1>
 
-    <ValidationContext.Provider value={setInputValid}>
-      <Form>{children}</Form>
-    </ValidationContext.Provider>
-
-      <span className='w-100 d-flex justify-content-around fixed-bottom py-2'>
-        <Button
-          className='btn-danger'
-          disabled={!page}
-          onClick={_ => push(page > 1 ? `/question/${parseInt(page) - 1}` : '/')}
-        >
-          <FontAwesomeIcon icon='rotate-left' />
-          Back
-        </Button>
-        <Button
-          disabled={!inputValid || page && parseInt(page) === questions.length}
-          onClick={_ => push(`/question/${pathname === '/' ? 1 : parseInt(page) + 1}`)}
-        >
-          Next
-        </Button>
-      </span>
+      {children}
     </Container>
   );
 }

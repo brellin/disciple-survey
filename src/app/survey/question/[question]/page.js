@@ -3,18 +3,17 @@
 import { Col, Form, FormCheck } from 'react-bootstrap';
 import FormCheckLabel from 'react-bootstrap/esm/FormCheckLabel';
 import FormCheckInput from 'react-bootstrap/esm/FormCheckInput';
-import questions from './questions';
-import { store } from '../../layout';
-import { useDispatch } from 'react-redux';
-import { SELECT_ANSWER } from '../../../lib/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { SELECT_ANSWER } from '../../../../lib/actions';
 import { useEffect, useRef } from 'react';
 
-export default function RenderPage({ params: { page } }) {
-  console.log('store', store.getState());
-  return <Page {...{ ...questions[page - 1], page }} />;
+export default function RenderPage({ params: { question } }) {
+  const questions = useSelector(state => state.questions);
+  if (questions.length) return <Page {...{ ...questions[question - 1], question }} />;
+  else return null;
 }
 
-const Page = ({ title, type, selections, page }) => (
+const Page = ({ title, type, selections, question }) => (
   <Col>
     <Form.Label>{title}</Form.Label>
     {selections.map(({ text }, id) => {
@@ -29,14 +28,16 @@ const Page = ({ title, type, selections, page }) => (
         default:
           console.error('Something went wrong.');
       }
-      const state = store.getState();
-      const checked = state.questions[page - 1] && state.questions[page - 1].selection === id;
-      return <Component {...{ page, text, id, questionId: page - 1, checked }} key={text} />;
+      const questions = useSelector(store => store.questions);
+      const checked = questions[question - 1] && questions[question - 1].selection === id;
+      return (
+        <Component {...{ question, text, id, questionId: question - 1, checked }} key={text} />
+      );
     })}
   </Col>
 );
 
-function RadioQuestion({ text, page, questionId, id, checked }) {
+function RadioQuestion({ text, question, questionId, id, checked }) {
   const dispatch = useDispatch();
   const ref = useRef();
   useEffect(
@@ -53,7 +54,7 @@ function RadioQuestion({ text, page, questionId, id, checked }) {
       <FormCheckInput
         className='me-2'
         type='radio'
-        name={page}
+        name={question}
         defaultChecked={checked}
         ref={ref}
         onInput={({ target }) =>
@@ -65,10 +66,10 @@ function RadioQuestion({ text, page, questionId, id, checked }) {
   );
 }
 
-function MultipleCheck({ text, page, questionId, id }) {
+function MultipleCheck({ text, question, questionId, id }) {
   return (
     <FormCheck>
-      <FormCheckInput className='me-2' type='checkbox' name={page} />
+      <FormCheckInput className='me-2' type='checkbox' name={question} />
       <FormCheckLabel>{text}</FormCheckLabel>
     </FormCheck>
   );

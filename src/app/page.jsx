@@ -1,17 +1,12 @@
 'use client';
 
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import questions from './question/[page]/questions';
-import { INIT_QUESTIONS, UPDATE_EMAIL } from '../lib/actions';
-import { ValidationContext } from './layout';
+import { UPDATE_EMAIL } from '../lib/actions';
 
 export default function Home() {
   const [email, setEmail] = useState(useSelector(store => store.email));
-  const [valid, setValid] = useState(validateEmail(email));
-  
-  const setInputValid = useContext(ValidationContext);
 
   const dispatch = useDispatch();
 
@@ -21,23 +16,9 @@ export default function Home() {
 
   useEffect(
     _ => {
-      dispatch({ type: INIT_QUESTIONS, payload: questions });
-    },
-    [dispatch]
-  );
-
-  useEffect(
-    _ => {
       dispatch({ type: UPDATE_EMAIL, payload: email });
     },
     [dispatch, email]
-  );
-
-  useEffect(
-    _ => {
-      setInputValid(valid);
-    },
-    [setInputValid, valid]
   );
 
   return (
@@ -48,7 +29,6 @@ export default function Home() {
         placeholder='example@email.com'
         onInput={({ target }) => {
           setEmail(target.value);
-          setValid(validateEmail(target.value));
         }}
         value={email}
       />
