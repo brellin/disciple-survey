@@ -1,11 +1,18 @@
 import { getCookie, setCookie } from 'cookies-next';
 import { configureStore } from '@reduxjs/toolkit';
-import { INIT_QUESTIONS, LOGIN, SELECT_ANSWER, UPDATE_EMAIL } from './actions';
+import {
+  INIT_QUESTIONS,
+  LOGIN,
+  SELECT_ANSWER,
+  UPDATE_EMAIL,
+  UPDATE_TOKEN
+} from './actions';
 
 const initialState = {
   email: getCookie('email') || '',
   user: {},
-  questions: getCookie('questions') ? JSON.parse(getCookie('questions')) : []
+  questions: getCookie('questions') ? JSON.parse(getCookie('questions')) : [],
+  token: getCookie('token') ?? ''
 };
 
 function reducer(state = initialState, { type, payload }) {
@@ -31,6 +38,12 @@ function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         questions
+      };
+    case UPDATE_TOKEN:
+      setCookie('token', payload);
+      return {
+        ...state,
+        token: payload
       };
     default:
       return state;

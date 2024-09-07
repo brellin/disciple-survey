@@ -5,7 +5,7 @@ import { Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from '../../../../utils/axios';
+import axios from 'axios';
 
 export const ValidationContext = createContext(null);
 
@@ -34,7 +34,7 @@ export default function SurveyLayout({ children }) {
     },
     [dispatch]
   );
-  
+
   return (
     <>
       <ValidationContext.Provider value={setInputValid}>
@@ -45,20 +45,20 @@ export default function SurveyLayout({ children }) {
         <Button
           className='btn-danger'
           disabled={pathname === '/'}
-          onClick={_ => push(question > 1 ? `/question/${parseInt(question) - 1}` : '/')}
+          onClick={_ =>
+            push(question > 1 ? `/question/${parseInt(question) - 1}` : '/')
+          }
         >
           <FontAwesomeIcon icon='rotate-left' />
           Back
         </Button>
         <Button
-          disabled={!inputValid || (question && parseInt(question) === questions.length)}
+          disabled={
+            !inputValid || (question && parseInt(question) === questions.length)
+          }
           onClick={_ => {
             setInputValid(false);
-            push(
-              pathname === '/'
-                ? '/login'
-                : `/question/${pathname === '/login' ? 1 : parseInt(question) + 1}`
-            );
+            push(`/survey/question/${parseInt(question) + 1}`);
           }}
         >
           Next
